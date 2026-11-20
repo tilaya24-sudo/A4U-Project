@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111b5f">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>Admin Login | Accel4U CMS</title>
+</head>
+<body class="admin-body">
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+  <main id="auth-view" class="auth-shell">
+    <div class="auth-card">
+      <a href="/" aria-label="Return to Accel4U website"><img class="auth-logo" src="/assets/logo.png" alt="Accel4U logo"></a>
+      <h1>Website Administration</h1><p>Sign in with your authorized Accel4U admin account.</p>
+      <p id="setup-hint" class="setup-hint" hidden>Supabase is not configured. Follow the included README setup instructions to enable admin login.</p>
+      <form id="login-form" class="stack-form">
+        <label>Email Address<input name="email" type="email" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="admin-button primary" type="submit">Sign In</button>
+      </form>
+      <form id="reset-request-form" class="stack-form" hidden>
+        <p>Enter the email address of your admin account. A reset link will be sent if the account exists.</p>
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <button class="admin-button primary" type="submit">Send Password Reset Link</button>
+      </form>
+      <form id="new-password-form" class="stack-form" hidden>
+        <p>Create a new password (minimum 12 characters).</p>
+        <label>New Password<input name="password" type="password" minlength="12" autocomplete="new-password" required></label>
+        <button class="admin-button primary" type="submit">Update Password</button>
+      </form>
+      <button class="simple-link" id="toggle-reset" type="button">Forgot password?</button>
+      <a class="simple-link back-home" href="/">← Back to Website</a>
+    </div>
+  </main>
+  <div id="dashboard" class="dashboard" hidden>
+    <aside class="sidebar">
+      <a href="/" class="sidebar-logo"><img src="/assets/logo.png" alt="Accel4U logo"><span>Website CMS</span></a>
+      <nav aria-label="Administration" id="sidebar-nav">
+        <button type="button" data-view="overview" class="selected">◫ <span>Dashboard</span></button>
+        <button type="button" data-view="pages">▤ <span>Pages & Layout</span></button>
+        <button type="button" data-view="media">▧ <span>Media Library</span></button>
+        <button type="button" data-view="theme">◈ <span>Design & Settings</span></button>
+        <button type="button" data-view="inquiries">✉ <span>Consultation Leads</span></button>
+        <button type="button" data-view="publish">↗ <span>Publish Changes</span></button>
+      </nav>
+      <div class="sidebar-bottom"><a href="/" target="_blank" rel="noopener noreferrer">↗ View Website</a><button type="button" id="signout-button">⇥ Sign Out</button></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><div><small>Accel4U Website CMS</small><h1 id="view-heading">Dashboard</h1></div>
+        <div class="top-actions"><span id="dirty-indicator" class="dirty-indicator">No unsaved changes</span><span id="user-email" class="user-pill"></span><button id="save-top" type="button" class="admin-button outline">Save Draft</button><button id="publish-top" type="button" class="admin-button primary">Publish</button></div>
+      </header>
+      <main class="work-main">
+        <section id="panel-overview" class="panel-view">
+          <div class="welcome-panel"><h2>Manage the complete Accel4U website.</h2><p>Update content, imagery, videos, files, layout, theme, and page metadata — then preview and publish when ready.</p><div class="welcome-buttons"><button data-go="pages" class="admin-button primary">Edit Pages</button><button data-go="media" class="admin-button outline">Open Media Library</button></div></div>
+          <div class="stat-grid"><div class="stat"><strong id="stat-pages">5</strong><span>Editable pages</span></div><div class="stat"><strong id="stat-sections">—</strong><span>Website sections</span></div><div class="stat"><strong id="stat-leads">—</strong><span>Consultation leads</span></div></div>
+          <div class="admin-card"><h3>Publishing Workflow</h3><p><b>1.</b> Select a page and edit sections or design settings. <b>2.</b> Upload media and attach it to a section. <b>3.</b> Save your draft and preview. <b>4.</b> Publish to update the live website.</p><p class="helper">Your GitHub/Vercel deployment serves the site code; published content is loaded from Supabase. Editing content does not require a Git commit or redeployment once it is set up.</p></div>
+        </section>
+        <section id="panel-pages" class="panel-view" hidden>
+          <div class="editor-layout">
+            <div class="page-sidebar admin-card"><h2>Pages</h2><div id="page-list" class="page-list"></div><hr><h3>Page Sections</h3><div id="section-list" class="section-list"></div><label class="mini-label" for="add-type">New Section Type</label><select id="add-type"></select><button class="admin-button outline full-width" id="add-section" type="button">+ Add Section</button></div>
+            <div class="editor-area"><div class="admin-card page-settings"><div class="card-heading"><h2 id="selected-page-title">Home</h2><button type="button" class="admin-button outline" id="preview-page">Preview Page ↗</button></div><p class="helper">Edit the page SEO and select a section to customize its content, media, and display settings.</p><div id="page-seo" class="field-grid"></div></div><div class="admin-card"><div class="card-heading"><h2 id="section-editor-title">Section Editor</h2><div id="section-actions"></div></div><div id="section-editor"></div></div></div>
+          </div>
+        </section>
+        <section id="panel-media" class="panel-view" hidden>
+          <div class="admin-card"><div class="card-heading"><div><h2>Media Library</h2><p>Upload images, MP4/WebM videos, or documents and attach them to website sections.</p></div></div>
+            <div class="upload-area"><label class="upload-label">Choose a file<input type="file" id="media-upload" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.webm,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip"></label><button id="upload-button" class="admin-button primary" type="button">Upload File</button><p>Maximum 48 MB per file. Supported: JPG, PNG, WebP, GIF, MP4, WebM, PDF, Office documents, TXT, ZIP. Videos and files use publicly accessible URLs.</p><progress id="upload-progress" value="0" max="1" hidden></progress></div>
+          </div><div class="admin-card"><div class="card-heading"><h2>Uploaded Files</h2><button id="refresh-media" class="admin-button outline" type="button">Refresh</button></div><div id="media-list" class="media-grid"><p>Media list will appear after you connect Supabase.</p></div></div>
+        </section>
+        <section id="panel-theme" class="panel-view" hidden>
+          <div class="admin-card"><h2>Design & Brand Settings</h2><p>Update visual styling and global site information. Individual section backgrounds and alignment are editable under Pages.</p><div id="theme-editor" class="field-grid"></div></div>
+          <div class="admin-card"><h2>Cost Estimator Settings</h2><p class="helper">These are demo planning assumptions, not official Accel4U prices. Do not treat them as quotes or guaranteed savings.</p><div id="calculator-editor" class="field-grid"></div></div>
+        </section>
+        <section id="panel-inquiries" class="panel-view" hidden>
+          <div class="admin-card"><div class="card-heading"><div><h2>Consultation Requests</h2><p>Only authorized website staff can access submitted inquiries. Handle contact details confidentially.</p></div><button id="refresh-leads" type="button" class="admin-button outline">Refresh</button></div><div class="table-scroll"><table class="leads-table"><thead><tr><th>Received</th><th>Contact</th><th>Company</th><th>Message</th><th>Status</th></tr></thead><tbody id="leads-list"></tbody></table></div></div>
+        </section>
+        <section id="panel-publish" class="panel-view" hidden>
+          <div class="admin-card publish-panel"><span class="publish-icon">↗</span><h2>Review and Publish Your Website</h2><p>Save your draft, open a private preview, then publish it for website visitors. Changes are stored in Supabase and appear on your Vercel website without rebuilding the code.</p><div class="publish-controls"><button id="save-draft" type="button" class="admin-button outline">Save Draft</button><button id="preview-current" type="button" class="admin-button outline">Preview Draft</button><button id="publish-button" type="button" class="admin-button primary">Publish Live Changes</button></div><p id="publish-status" class="helper"></p><p class="helper">GitHub is used for source code and Vercel for hosting. The Publish button updates CMS content, not your Git repository.</p></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <dialog id="preview-dialog" class="preview-dialog"><div class="preview-header"><strong>Website Draft Preview</strong><span>This is your private draft — not yet live.</span><button class="admin-button outline" id="close-preview" type="button">Close</button></div><iframe id="preview-frame" title="Website draft preview"></iframe></dialog>
+  <script type="module" src="/src/admin.js"></script>
+</body>
+</html>
